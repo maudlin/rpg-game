@@ -1,38 +1,37 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Turn-Based RPG Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Wizards vs Robots</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Turn-Based RPG Game</h1>
-  </header>
-  <main>
-    <section class="game">
-      <div class="character">
-        <h2>Player</h2>
-        <p>HP: <span id="player-hp">100</span></p>
-      </div>
-      <div class="character">
-        <h2>NPC</h2>
-        <p>HP: <span id="npc-hp">100</span></p>
-      </div>
-      <button id="start-combat">Start Combat</button>
-    </section>
-    <section class="combat-log">
-      <h2>Combat Log</h2>
-      <ul id="log">
-        <!-- Combat log messages will be added here -->
-      </ul>
-    </section>
-  </main>
-  <footer>
-    <p>Created by Your Name</p>
-  </footer>
+  <form id="character-selection">
+    <h2>Select your character:</h2>
+    <label>
+      <input type="radio" name="character" value="WIZARD" checked>
+      Wizard
+    </label>
+    <label>
+      <input type="radio" name="character" value="ROBOT">
+      Robot
+    </label>
+    <button type="submit">Select</button>
+  </form>
+  <div id="game">
+    <h1>Wizards vs Robots</h1>
+    <button id="start-combat" style="display:none">Start Combat</button>
+    <div id="combat-log"></div>
+    <div>
+      Player HP: <span id="player-hp">100</span>
+    </div>
+    <div>
+      NPC HP: <span id="npc-hp">100</span>
+    </div>
+  </div>
   <script src="game.js"></script>
 </body>
 </html>

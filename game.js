@@ -1,13 +1,31 @@
 // game.js
 const config = {
-    timePerTurn: 3000, // Time in milliseconds
-  };
-  
-  class Character {
-    constructor(name, hp) {
-      this.name = name;
-      this.hp = hp;
-    }
+  timePerTurn: 3000, // Time in milliseconds
+};
+
+const CharacterType = {
+  WIZARD: {
+    name: 'Wizard',
+    health: 100,
+    resistances: {}, // Add resistances here
+    damageTypes: {}, // Add damage types here
+  },
+  ROBOT: {
+    name: 'Robot',
+    health: 120,
+    resistances: {}, // Add resistances here
+    damageTypes: {}, // Add damage types here
+  },
+};
+
+class Character {
+  constructor(type) {
+    this.name = type.name;
+    this.maxHp = type.health;
+    this.hp = this.maxHp;
+    this.resistances = type.resistances;
+    this.damageTypes = type.damageTypes;
+  }
   
     isAlive() {
       return this.hp > 0;
@@ -74,15 +92,24 @@ const config = {
   }
   
   function initializeGame() {
-    const player = new Character("Player", 100);
-    const npc = new Character("NPC", 100);
-  
+    const characterSelectionForm = document.getElementById('character-selection');
     const startCombatButton = document.getElementById('start-combat');
-    startCombatButton.addEventListener('click', () => {
-      startCombatButton.disabled = true;
-      runCombat(player, npc, player, npc);
+  
+    characterSelectionForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const selectedCharacter = document.querySelector('input[name="character"]:checked').value;
+      const player = new Character(CharacterType[selectedCharacter]);
+      const npc = new Character(CharacterType.ROBOT);
+  
+      characterSelectionForm.style.display = 'none';
+  
+      startCombatButton.addEventListener('click', () => {
+        startCombatButton.disabled = true;
+        runCombat(player, npc, player, npc);
+      });
+  
+      startCombatButton.style.display = 'block';
     });
   }
   
   initializeGame();
-  
