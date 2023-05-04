@@ -1,0 +1,38 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turn-Based RPG Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Turn-Based RPG Game</h1>
+  </header>
+  <main>
+    <section class="game">
+      <div class="character">
+        <h2>Player</h2>
+        <p>HP: <span id="player-hp">100</span></p>
+      </div>
+      <div class="character">
+        <h2>NPC</h2>
+        <p>HP: <span id="npc-hp">100</span></p>
+      </div>
+      <button id="start-combat">Start Combat</button>
+    </section>
+    <section class="combat-log">
+      <h2>Combat Log</h2>
+      <ul id="log">
+        <!-- Combat log messages will be added here -->
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p>Created by Your Name</p>
+  </footer>
+  <script src="game.js"></script>
+</body>
+</html>
