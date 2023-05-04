@@ -28,6 +28,18 @@ To play the game, simply open the `index.html` file in your web browser. No addi
 - Improve the user interface with better visuals and animations
 - Allow players to choose their opponents
 
+## Author
+
+- ChatGPT by OpenAI
+
+## Note
+
+The rules of this game are that the author of the game can only copy and paste from ChatGPT.
+
+## License
+
+This project is licensed under the MIT License.
+
 ## Contributing
 
 If you'd like to contribute to the project, feel free to submit a pull request or open an issue with your suggestions or bug reports.

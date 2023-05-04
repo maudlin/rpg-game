@@ -28,34 +28,44 @@ class Character {
   }
 }
 
+function displayMessage(message) {
+  const combatLog = document.getElementById("combat-log");
+  const p = document.createElement("p");
+  p.textContent = message;
+  combatLog.appendChild(p);
+
+  // Autoscroll to the bottom of the combat log
+  combatLog.scrollTop = combatLog.scrollHeight;
+}
+
+
 function displayAttackMessage(attacker, damage, defender, remainingHp) {
-  const combatLog = document.getElementById('combat-log');
-  const message = document.createElement('p');
-  message.textContent = `${attacker} dealt ${damage} damage to ${defender}. ${defender} has ${remainingHp} HP remaining.`;
-  combatLog.appendChild(message);
+  const message = `${attacker} attacks ${defender} for ${damage} damage. ${defender} has ${remainingHp} HP remaining.`;
+  displayMessage(message);
 }
 
 function displayMissMessage(attacker, defender) {
-  const combatLog = document.getElementById('combat-log');
-  const message = document.createElement('p');
-  message.textContent = `${attacker} missed their attack on ${defender}.`;
-  combatLog.appendChild(message);
+  const message = `${attacker} misses their attack on ${defender}.`;
+  displayMessage(message);
 }
 
-function displayDefeatMessage(defeated) {
-  const combatLog = document.getElementById('combat-log');
-  const message = document.createElement('p');
-  message.textContent = `${defeated} was defeated.`;
-  combatLog.appendChild(message);
+function displayDefeatMessage(defeatedCharacter) {
+  const message = `${defeatedCharacter} has been defeated.`;
+  displayMessage(message);
 }
+
 
 function performAttack(attacker, defender) {
   if (Math.random() <= 0.5) {
     const damage = Math.floor(Math.random() * 6) + 5;
     defender.hp -= damage;
-    if (defender.hp < 0) {
+
+    // Make sure the HP doesn't go below 0
+    if (defender.hp <= 0) {
       defender.hp = 0;
+      displayDefeatMessage(defender.name);
     }
+
     displayAttackMessage(attacker.name, damage, defender.name, defender.hp);
   } else {
     displayMissMessage(attacker.name, defender.name);
@@ -73,6 +83,8 @@ function runCombat(player, npc, attacker, defender) {
 
   document.getElementById('player-hp').textContent = player.hp;
   document.getElementById('npc-hp').textContent = npc.hp;
+
+  updateHpBars(player, npc);
 
   setTimeout(() => {
     runCombat(player, npc, defender, attacker);
@@ -98,6 +110,11 @@ function initializeGame() {
 
     startCombatButton.style.display = 'block';
   });
+}
+
+function updateHpBars(player, npc) {
+  document.getElementById('player-hp-bar').style.width = (player.hp / player.maxHp) * 100 + '%';
+  document.getElementById('npc-hp-bar').style.width = (npc.hp / npc.maxHp) * 100 + '%';
 }
 
 initializeGame();

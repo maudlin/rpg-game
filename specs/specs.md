@@ -42,3 +42,8 @@ Feature: Character Selection
     Given the player is at the character selection screen
     When the player chooses to play as a robot
     Then the player's character should have robot-specific health, resistances, and damage types
+
+  Scenario: Selecting a character type
+    Given the player is on the character selection screen
+    When the player selects a character type
+    Then the selected character type should be stored in the game state
