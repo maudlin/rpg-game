@@ -1,6 +1,6 @@
 // game.js
 const config = {
-  timePerTurn: 3000, // Time in milliseconds
+  timePerTurn: 500, // Time in milliseconds
 };
 
 const CharacterType = {
@@ -26,90 +26,78 @@ class Character {
     this.resistances = type.resistances;
     this.damageTypes = type.damageTypes;
   }
-  
-    isAlive() {
-      return this.hp > 0;
-    }
-  
-    takeDamage(damage) {
-      this.hp -= damage;
-      if (this.hp < 0) {
-        this.hp = 0;
-      }
-    }
-  }
-  
-  function autoAttack(attacker, defender) {
-    const isHit = Math.random() < 0.5;
-    if (!isHit) {
-      return 0;
-    }
-  
+}
+
+function displayAttackMessage(attacker, damage, defender, remainingHp) {
+  const combatLog = document.getElementById('combat-log');
+  const message = document.createElement('p');
+  message.textContent = `${attacker} dealt ${damage} damage to ${defender}. ${defender} has ${remainingHp} HP remaining.`;
+  combatLog.appendChild(message);
+}
+
+function displayMissMessage(attacker, defender) {
+  const combatLog = document.getElementById('combat-log');
+  const message = document.createElement('p');
+  message.textContent = `${attacker} missed their attack on ${defender}.`;
+  combatLog.appendChild(message);
+}
+
+function displayDefeatMessage(defeated) {
+  const combatLog = document.getElementById('combat-log');
+  const message = document.createElement('p');
+  message.textContent = `${defeated} was defeated.`;
+  combatLog.appendChild(message);
+}
+
+function performAttack(attacker, defender) {
+  if (Math.random() <= 0.5) {
     const damage = Math.floor(Math.random() * 6) + 5;
-    defender.takeDamage(damage);
-    return damage;
-  }
-  
-  function combatRound(attacker, defender, player, npc) {
-    const damage = autoAttack(attacker, defender);
-    updateHp(defender === player ? 'player-hp' : 'npc-hp', defender.hp);
-    updateCombatLog(attacker, damage, defender);
-  
-    if (!defender.isAlive()) {
-      addLogMessage(`${defender.name} is defeated.`);
-      return false;
+    defender.hp -= damage;
+    if (defender.hp < 0) {
+      defender.hp = 0;
     }
-  
-    return true;
+    displayAttackMessage(attacker.name, damage, defender.name, defender.hp);
+  } else {
+    displayMissMessage(attacker.name, defender.name);
   }
-  
-  function updateCombatLog(attacker, damage, defender) {
-    if (damage > 0) {
-      addLogMessage(`${attacker.name} dealt ${damage} damage to ${defender.name}. Remaining HP: ${defender.hp}`);
-    } else {
-      addLogMessage(`${attacker.name} missed their attack on ${defender.name}.`);
-    }
+}
+
+function runCombat(player, npc, attacker, defender) {
+  if (player.hp === 0 || npc.hp === 0) {
+    if (player.hp === 0) displayDefeatMessage(player.name);
+    if (npc.hp === 0) displayDefeatMessage(npc.name);
+    return;
   }
 
-  function updateHp(elementId, hp) {
-    document.getElementById(elementId).innerText = hp;
-  }
-  
-  function addLogMessage(message) {
-    const log = document.getElementById('log');
-    const listItem = document.createElement('li');
-    listItem.innerText = message;
-    log.appendChild(listItem);
-  }
-  
-  function runCombat(attacker, defender, player, npc) {
-    if (combatRound(attacker, defender, player, npc)) {
-      setTimeout(() => runCombat(defender, attacker, player, npc), config.timePerTurn);
-    } else {
-      const startCombatButton = document.getElementById('start-combat');
-      startCombatButton.disabled = false;
-    }
-  }
-  
-  function initializeGame() {
-    const characterSelectionForm = document.getElementById('character-selection');
-    const startCombatButton = document.getElementById('start-combat');
-  
-    characterSelectionForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const selectedCharacter = document.querySelector('input[name="character"]:checked').value;
-      const player = new Character(CharacterType[selectedCharacter]);
-      const npc = new Character(CharacterType.ROBOT);
-  
-      characterSelectionForm.style.display = 'none';
-  
-      startCombatButton.addEventListener('click', () => {
-        startCombatButton.disabled = true;
-        runCombat(player, npc, player, npc);
-      });
-  
-      startCombatButton.style.display = 'block';
+  performAttack(attacker, defender);
+
+  document.getElementById('player-hp').textContent = player.hp;
+  document.getElementById('npc-hp').textContent = npc.hp;
+
+  setTimeout(() => {
+    runCombat(player, npc, defender, attacker);
+  }, config.timePerTurn);
+}
+
+function initializeGame() {
+  const characterSelectionForm = document.getElementById('character-selection');
+  const startCombatButton = document.getElementById('start-combat');
+
+  characterSelectionForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const selectedCharacter = document.querySelector('input[name="character"]:checked').value;
+    const player = new Character(CharacterType[selectedCharacter]);
+    const npc = new Character(CharacterType.ROBOT);
+
+    characterSelectionForm.style.display = 'none';
+
+    startCombatButton.addEventListener('click', () => {
+      startCombatButton.disabled = true;
+      runCombat(player, npc, player, npc);
     });
-  }
-  
-  initializeGame();
+
+    startCombatButton.style.display = 'block';
+  });
+}
+
+initializeGame();
