@@ -1,66 +1,41 @@
 /* style.css */
+
 body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
+  background-color: #222;
+  font-family: 'Courier New', monospace;
+  color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
 }
 
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 30px;
-}
-
-h1, h2 {
-  color: #333;
+h1 {
+  font-size: 24px;
   margin-bottom: 10px;
 }
 
 button {
-  max-width: 200px;
-  width: 100%;
-  background-color: #333;
-  color: #fff;
-  padding: 10px;
-  border: none;
+  background-color: #444;
+  border: 2px solid #888;
+  color: #f0f0f0;
   cursor: pointer;
-  margin: 5px;
+  font-family: 'Courier New', monospace;
   font-size: 16px;
+  padding: 5px 10px;
+  margin-top: 5px;
 }
 
 button:hover {
   background-color: #555;
-}
-
-button:disabled {
-  background-color: #777;
-  cursor: not-allowed;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-input[type="radio"] {
-  margin: 5px;
-}
-
-label {
-  font-size: 1.1em;
-  margin-bottom: 5px;
-}
-
-#game {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-color: #999;
 }
 
 #combat-log {
+  box-sizing: border-box;
   border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
@@ -78,36 +53,24 @@ label {
   margin: 0 0 5px;
 }
 
-#player-hp,
-#npc-hp {
-  color: #333;
+#character-select {
+  max-width: 200px;
+  width: 100%;
 }
 
-#hp-container {
+.health-bar-container {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.hp-bar {
-  position: relative;
-  width: 200px;
+.health-bar {
+  background-color: #f00;
   height: 20px;
-  background-color: #ccc;
-  border-radius: 5px;
 }
 
-.hp-bar-inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
+.health-bar-inner {
   background-color: #0f0;
-  border-radius: 5px;
-}
-
-.hp-label {
-  font-size: 16px;
-  text-align: center;
-  margin-bottom: 5px;
+  height: 100%;
 }
