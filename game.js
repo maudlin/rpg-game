@@ -1,120 +1,93 @@
-// game.js
-const config = {
-  timePerTurn: 500, // Time in milliseconds
-};
+let player;
+let npc;
 
-const CharacterType = {
-  WIZARD: {
-    name: 'Wizard',
-    health: 100,
-    resistances: {}, // Add resistances here
-    damageTypes: {}, // Add damage types here
-  },
-  ROBOT: {
-    name: 'Robot',
-    health: 120,
-    resistances: {}, // Add resistances here
-    damageTypes: {}, // Add damage types here
-  },
-};
+function initializeGame(characterType) {
+  const playerConfig = config.characterConfig[characterType];
+  player = new Character(
+    characterType,
+    playerConfig.hp,
+    playerConfig.hp, // Add this line to set maxHp for the player
+    playerConfig.attackSpeed * 1000,
+    playerConfig.chanceToHit,
+    playerConfig.minDamage,
+    playerConfig.maxDamage
+  );
 
-class Character {
-  constructor(type) {
-    this.name = type.name;
-    this.maxHp = type.health;
-    this.hp = this.maxHp;
-    this.resistances = type.resistances;
-    this.damageTypes = type.damageTypes;
-  }
-}
+  const npcConfig = config.characterConfig.robot;
+  npc = new Character(
+    'Robot',
+    npcConfig.hp,
+    npcConfig.hp, // Add this line to set maxHp for the npc
+    npcConfig.attackSpeed * 1000,
+    npcConfig.chanceToHit,
+    npcConfig.minDamage,
+    npcConfig.maxDamage
+  );
 
-function displayMessage(message) {
-  const combatLog = document.getElementById("combat-log");
-  const p = document.createElement("p");
-  p.textContent = message;
-  combatLog.appendChild(p);
-
-  // Autoscroll to the bottom of the combat log
-  combatLog.scrollTop = combatLog.scrollHeight;
+  updateHpBars(player, npc);
 }
 
 
-function displayAttackMessage(attacker, damage, defender, remainingHp) {
-  const message = `${attacker} attacks ${defender} for ${damage} damage. ${defender} has ${remainingHp} HP remaining.`;
-  displayMessage(message);
-}
-
-function displayMissMessage(attacker, defender) {
-  const message = `${attacker} misses their attack on ${defender}.`;
-  displayMessage(message);
-}
-
-function displayDefeatMessage(defeatedCharacter) {
-  const message = `${defeatedCharacter} has been defeated.`;
-  displayMessage(message);
-}
-
+initializeGame('wizard');
 
 function performAttack(attacker, defender) {
-  if (Math.random() <= 0.5) {
-    const damage = Math.floor(Math.random() * 6) + 5;
-    defender.hp -= damage;
-
-    // Make sure the HP doesn't go below 0
-    if (defender.hp <= 0) {
-      defender.hp = 0;
-      displayDefeatMessage(defender.name);
-    }
-
-    displayAttackMessage(attacker.name, damage, defender.name, defender.hp);
+  if (Math.random() < attacker.chanceToHit) {
+    const damage = Math.floor(Math.random() * (attacker.maxDamage - attacker.minDamage + 1)) + attacker.minDamage;
+    defender.takeDamage(damage);
+    addCombatLogMessage(`${attacker.name} hit ${defender.name} for ${damage} damage. ${defender.name} has ${defender.hp} HP remaining.`);
   } else {
-    displayMissMessage(attacker.name, defender.name);
+    addCombatLogMessage(`${attacker.name} missed ${defender.name}.`);
   }
 }
 
-function runCombat(player, npc, attacker, defender) {
-  if (player.hp === 0 || npc.hp === 0) {
-    if (player.hp === 0) displayDefeatMessage(player.name);
-    if (npc.hp === 0) displayDefeatMessage(npc.name);
+function runCombatRound(attacker, defender) {
+  if (attacker.hp === 0 || defender.hp === 0) {
+    if (attacker.hp === 0) {
+      addCombatLogMessage(`${attacker.name} has been defeated.`);
+      if (attacker === player) {
+        showGameOverMessage("You Lose");
+      } else {
+        showGameOverMessage("You Win!");
+      }
+    }
+    if (defender.hp === 0) {
+      addCombatLogMessage(`${defender.name} has been defeated.`);
+      if (defender === player) {
+        showGameOverMessage("You Lose");
+      } else {
+        showGameOverMessage("You Win!");
+      }
+    }
     return;
   }
 
   performAttack(attacker, defender);
-
-  document.getElementById('player-hp').textContent = player.hp;
-  document.getElementById('npc-hp').textContent = npc.hp;
-
-  updateHpBars(player, npc);
-
-  setTimeout(() => {
-    runCombat(player, npc, defender, attacker);
-  }, config.timePerTurn);
+  updateHpBars(attacker, defender);
 }
 
-function initializeGame() {
-  const characterSelectionForm = document.getElementById('character-selection');
-  const startCombatButton = document.getElementById('start-combat');
+function runCombat() {
+  if (player.hp === 0 || npc.hp === 0) {
+    return;
+  }
 
-  characterSelectionForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const selectedCharacter = document.querySelector('input[name="character"]:checked').value;
-    const player = new Character(CharacterType[selectedCharacter]);
-    const npc = new Character(CharacterType.ROBOT);
+  runCombatRound(player, npc);
+  setTimeout(() => {
+    runCombatRound(npc, player);
+  }, npc.attackSpeed);
 
-    characterSelectionForm.style.display = 'none';
-
-    startCombatButton.addEventListener('click', () => {
-      startCombatButton.disabled = true;
-      runCombat(player, npc, player, npc);
-    });
-
-    startCombatButton.style.display = 'block';
-  });
+  setTimeout(() => {
+    runCombat(player, npc);
+  }, player.attackSpeed);
 }
 
 function updateHpBars(player, npc) {
-  document.getElementById('player-hp-bar').style.width = (player.hp / player.maxHp) * 100 + '%';
-  document.getElementById('npc-hp-bar').style.width = (npc.hp / npc.maxHp) * 100 + '%';
-}
+  const playerHpBar = document.getElementById("player-inner-health-bar");
+  const playerHpText = document.getElementById("player-hp");
+  const npcHpBar = document.getElementById("npc-inner-health-bar");
+  const npcHpText = document.getElementById("npc-hp");
 
-initializeGame();
+  playerHpBar.style.width = `${(player.hp / player.maxHp) * 100}%`;
+  playerHpText.textContent = `Player (${player.name}): ${player.hp}/${player.maxHp}`;
+  npcHpBar.style.width = `${(npc.hp / npc.maxHp) * 100}%`;
+  npcHpText.textContent = `NPC (${npc.name}): ${npc.hp}/${npc.maxHp}`;
+}

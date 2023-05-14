@@ -3,43 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizards vs Robots</title>
   <link rel="stylesheet" href="style.css">
+  <title>Wizard vs Robot</title>
 </head>
-<body><body>
-  <div class="container">
-    <h1>Wizards vs Robots</h1>
-  <form id="character-selection">
-    <h2>Select your character:</h2>
-    <label>
-      <input type="radio" name="character" value="WIZARD" checked>
+<body>
+  <h1>Wizard vs Robot</h1>
+
+  <div class="character-select">
+    <h2>Select Your Character</h2>
+    <label for="wizard">
+      <input type="radio" name="character" value="wizard" id="wizard" checked>
       Wizard
     </label>
-    <label>
-      <input type="radio" name="character" value="ROBOT">
+    <label for="robot">
+      <input type="radio" name="character" value="robot" id="robot">
       Robot
     </label>
-    <button type="submit">Select</button>
-  </form>
-  <div id="hp-container">
-    <div>
-      <p class="hp-label">Player HP: <span id="player-hp">100</span></p>
-      <div class="hp-bar">
-        <div id="player-hp-bar" class="hp-bar-inner" style="width: 100%;"></div>
-      </div>
+  </div>
+
+  <div class="health-bars">
+    <!-- Player Health Bar -->
+    <div id="player-health-bar" class="health-bar">
+      <div id="player-inner-health-bar" class="inner-health-bar"></div>
     </div>
-    <div>
-      <p class="hp-label">NPC HP: <span id="npc-hp">100</span></p>
-      <div class="hp-bar">
-        <div id="npc-hp-bar" class="hp-bar-inner" style="width: 100%;"></div>
-      </div>
+    <span id="player-hp"></span>
+
+    <!-- NPC Health Bar -->
+    <div id="npc-health-bar" class="health-bar">
+      <div id="npc-inner-health-bar" class="inner-health-bar"></div>
+    </div>
+    <span id="npc-hp"></span>
+  </div>
+
+  <button id="start-combat">Start Combat</button>
+
+  <div class="combat-log">
+    <div class="combat-log-content">
+      <!-- Combat log messages will be added here -->
     </div>
   </div>
-  <div id="game">
-    <h1>Wizards vs Robots</h1>
-    <button id="start-combat" style="display:none">Start Combat</button>
-    <div id="combat-log"></div>
-  </div>
+
+  <div id="game-over-message" class="game-over-message"></div>
+
+
+  <script src="config.js"></script>
+  <script src="character.js"></script>
   <script src="game.js"></script>
-</body>
+  <script src="ui.js"></script>
+  </body>
 </html>

@@ -1,49 +1,38 @@
-Feature: Combat Log
-  As a player
-  I want to see the events that occur during combat
-  So that I can understand what's happening in the game
+Feature: Wizard vs Robot Game
 
-  Scenario: Displaying successful attack events
-    Given the player has started combat
-    When a character successfully attacks another character
-    Then the combat log should show a message indicating the attacker's name, the damage dealt, and the defender's remaining HP
+  Scenario: Game Initialization
+    Given the game is loaded
+    When the player chooses a character type (wizard or robot)
+    Then the game should initialize with the chosen character type for the player and the remaining character type for the NPC
 
-  Scenario: Displaying missed attack events
-    Given the player has started combat
-    When a character misses an attack on another character
-    Then the combat log should show a message indicating the attacker's name and that the attack missed
+  Scenario: Displaying Character Stats
+    Given the game is initialized
+    Then the health bars and the text displaying current and max HP of both the player and the NPC should be visible
 
-  Scenario: Displaying a character's defeat
-    Given the player has started combat
-    When a character's HP reaches 0
-    Then the combat log should show a message indicating the defeated character's name and that they were defeated
+  Scenario: Combat Log
+    Given the game is initialized
+    When the combat starts
+    Then the combat log should display a history of combat events in a fixed frame with green monospaced text on a black background
+    And the combat log should autoscroll to the bottom without scrollbars
 
-  Scenario: Displaying timestamps for combat events
-    Given the player has started combat
-    When an event occurs during combat
-    Then the combat log should show a timestamp for that event
+  Scenario: Combat Mechanics
+    Given the game is initialized
+    When the combat starts
+    Then each character should take turns attacking based on their attack speed
+    And the combat log should display a message for each attack event (hit or miss)
 
-  Scenario: Color-coding combat log messages
-    Given the player has started combat
-    When an event occurs during combat
-    Then the combat log should display the message in a color that represents the type of event (e.g., green for successful attacks, red for missed attacks, and gray for defeated characters)
+  Scenario: Health Bar Updates
+    Given the game is initialized
+    When a character takes damage
+    Then the health bar of the damaged character should update to reflect the remaining health
 
-Feature: Character Selection
-  As a player
-  I want to choose between playing as a wizard or a robot
-  So that I can have different abilities, health, resistances, and damage types
+  Scenario: Win or Lose Messages
+    Given the game is initialized
+    When either the player or the NPC reaches 0 health
+    Then a styled "You Win!" or "You Lose" message should appear over the game
 
-  Scenario: Player selects the wizard character
-    Given the player is at the character selection screen
-    When the player chooses to play as a wizard
-    Then the player's character should have wizard-specific health, resistances, and damage types
-
-  Scenario: Player selects the robot character
-    Given the player is at the character selection screen
-    When the player chooses to play as a robot
-    Then the player's character should have robot-specific health, resistances, and damage types
-
-  Scenario: Selecting a character type
-    Given the player is on the character selection screen
-    When the player selects a character type
-    Then the selected character type should be stored in the game state
+  Scenario: End of Combat
+    Given the game is initialized
+    When either the player or the NPC reaches 0 health
+    Then the combat should stop
+    And no more attack events should occur
